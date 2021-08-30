@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
+//乱数生成
 function getRandomInt(max) {
   return Math.floor(Math.random() * max + 1);
 }
@@ -19,16 +20,21 @@ const scrape = async (url) => {
   const pokemonurl = await page.evaluate((selector) => {
     return document.querySelector(selector).innerHTML;
   }, '#json-data');
+  //JSON形式に変換
   let jsonObject = JSON.parse(pokemonurl);
-  //ファイル出力
+  //出力ファイル名
   let filename = `poke_${pokeid}.json`
+  //ファイル出力
   fs.writeFile(`./pokemon/${filename}`, JSON.stringify(jsonObject, null, 3), (err) => {
     if (err) {
+      //エラー時
       console.error(err);
       return;
     };
+    //完了時
     console.log("complete");
   });
+  //ブラウザを閉じる
   browser.close();
 }
 
